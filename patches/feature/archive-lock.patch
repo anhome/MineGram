@@ -1,0 +1,23 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: luu <gerydel28@gmail.com>
+Date: Thu, 23 Jul 2026 21:56:03 +0600
+Subject: Lock the Archive folder behind a code word or biometric
+
+---
+ .../src/main/java/org/telegram/ui/DialogsActivity.java         | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/TMessagesProj/src/main/java/org/telegram/ui/DialogsActivity.java b/TMessagesProj/src/main/java/org/telegram/ui/DialogsActivity.java
+index 0000000..0000000 100644
+--- a/TMessagesProj/src/main/java/org/telegram/ui/DialogsActivity.java
++++ b/TMessagesProj/src/main/java/org/telegram/ui/DialogsActivity.java
+@@ -2886,6 +2886,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
+             checkCanWrite = arguments.getBoolean("checkCanWrite", true);
+             afterSignup = arguments.getBoolean("afterSignup", false);
+             folderId = arguments.getInt("folderId", 0);
++            if (folderId == 1) {
++                desu.mintgram.helpers.security.ArchiveLockHelper.checkAccess(this);
++            }
+             communityId = arguments.getLong("community_id", 0);
+             if (communityId != 0) {
+                 community = getMessagesController().getChat(communityId);

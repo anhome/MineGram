@@ -1,0 +1,46 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: alina sireneva <alina@tei.su>
+Date: Fri, 17 Jul 2026 01:02:06 +0400
+Subject: hopefully fix stale notifications for chats read on another device
+
+---
+ .../java/org/telegram/messenger/NotificationsController.java | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/TMessagesProj/src/main/java/org/telegram/messenger/NotificationsController.java b/TMessagesProj/src/main/java/org/telegram/messenger/NotificationsController.java
+index 0000000..0000000 100644
+--- a/TMessagesProj/src/main/java/org/telegram/messenger/NotificationsController.java
++++ b/TMessagesProj/src/main/java/org/telegram/messenger/NotificationsController.java
+@@ -248,6 +248,8 @@ public class NotificationsController extends BaseController implements Notificat
+ 
+         dialogsNotificationsFacade = new NotificationsSettingsFacade(currentAccount);
+ 
++        notificationsQueue.postRunnable(() -> NotificationsHelper.loadWearNotificationIds(currentAccount, wearNotificationsIds));
++
+         AndroidUtilities.runOnUIThread(() -> {
+             getNotificationCenter().addObserver(this, NotificationCenter.fileLoaded);
+         });
+@@ -3259,6 +3261,7 @@ public class NotificationsController extends BaseController implements Notificat
+                 notificationManager.cancel(wearNotificationsIds.valueAt(a));
+             }
+             wearNotificationsIds.clear();
++            NotificationsHelper.saveWearNotificationIds(currentAccount, wearNotificationsIds);
+         });
+     }
+ 
+@@ -3277,6 +3280,7 @@ public class NotificationsController extends BaseController implements Notificat
+                 notificationManager.cancel(wearNotificationsIds.valueAt(a));
+             }
+             wearNotificationsIds.clear();
++            NotificationsHelper.saveWearNotificationIds(currentAccount, wearNotificationsIds);
+             AndroidUtilities.runOnUIThread(() -> NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.pushMessagesUpdated));
+         } catch (Exception e) {
+             FileLog.e(e);
+@@ -5832,6 +5836,7 @@ public class NotificationsController extends BaseController implements Notificat
+                 ShortcutManagerCompat.removeDynamicShortcuts(ApplicationLoader.applicationContext, ids);
+             }
+         }
++        NotificationsHelper.saveWearNotificationIds(currentAccount, wearNotificationsIds);
+     }
+ 
+     private String cutLastName(String name) {

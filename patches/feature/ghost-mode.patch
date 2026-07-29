@@ -1,0 +1,30 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: luu <gerydel28@gmail.com>
+Date: Wed, 22 Jul 2026 19:25:45 +0600
+Subject: Add ghost mode (hide read/online/typing status)
+
+---
+ .../java/org/telegram/tgnet/ConnectionsManager.java    | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/TMessagesProj/src/main/java/org/telegram/tgnet/ConnectionsManager.java b/TMessagesProj/src/main/java/org/telegram/tgnet/ConnectionsManager.java
+index 0000000..0000000 100644
+--- a/TMessagesProj/src/main/java/org/telegram/tgnet/ConnectionsManager.java
++++ b/TMessagesProj/src/main/java/org/telegram/tgnet/ConnectionsManager.java
+@@ -386,6 +386,16 @@ public class ConnectionsManager extends BaseController {
+         if (BuildVars.LOGS_ENABLED) {
+             FileLog.d("send request " + object + " with token = " + requestToken);
+         }
++        if (desu.mintgram.InuConfig.GHOST_HIDE_TYPING_STATUS.getValue() && (object instanceof TLRPC.TL_messages_setTyping || object instanceof TLRPC.TL_messages_setEncryptedTyping)) {
++            return;
++        }
++        if (desu.mintgram.InuConfig.GHOST_HIDE_ONLINE_STATUS.getValue() && object instanceof org.telegram.tgnet.tl.TL_account.updateStatus) {
++            ((org.telegram.tgnet.tl.TL_account.updateStatus) object).offline = true;
++        }
++        if (desu.mintgram.InuConfig.GHOST_HIDE_READ_STATUS.getValue() && desu.mintgram.helpers.security.GhostModeHelper.isReadRequest(object)) {
++            desu.mintgram.helpers.security.GhostModeHelper.fakeReadResponse(onComplete);
++            return;
++        }
+         try {
+             NativeByteBuffer buffer = new NativeByteBuffer(object.getObjectSize());
+             object.serializeToStream(buffer);

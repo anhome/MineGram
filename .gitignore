@@ -1,0 +1,10 @@
+node_modules/
+worktree/
+.DS_Store
+src/core/build
+src/res/assets/adguard_url_tracking.txt
+TODO.md
+CLAUDE.local.md
+*.apk
+AGENT_HANDOFF.md
+EXTERAGRAM_PORT_STATUS.md

@@ -1,0 +1,30 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: luu <gerydel28@gmail.com>
+Date: Wed, 22 Jul 2026 22:37:10 +0600
+Subject: Fix overexposed launcher icon (drop broken monochrome layer)
+
+---
+ TMessagesProj/src/main/res/mipmap-anydpi-v26/ic_launcher.xml     | 1 -
+ .../src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml         | 1 -
+ 2 files changed, 2 deletions(-)
+
+diff --git a/TMessagesProj/src/main/res/mipmap-anydpi-v26/ic_launcher.xml b/TMessagesProj/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+index 0000000..0000000 100644
+--- a/TMessagesProj/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
++++ b/TMessagesProj/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+@@ -2,5 +2,4 @@
+ <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+     <background android:drawable="@drawable/icon_background_mint" />
+     <foreground android:drawable="@mipmap/icon_foreground_mint" />
+-    <monochrome android:drawable="@mipmap/icon_foreground_mint" />
+ </adaptive-icon>
+diff --git a/TMessagesProj/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml b/TMessagesProj/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+index 0000000..0000000 100644
+--- a/TMessagesProj/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
++++ b/TMessagesProj/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+@@ -2,5 +2,4 @@
+ <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+     <background android:drawable="@drawable/icon_background_mint" />
+     <foreground android:drawable="@mipmap/icon_foreground_mint" />
+-    <monochrome android:drawable="@mipmap/icon_foreground_mint" />
+ </adaptive-icon>

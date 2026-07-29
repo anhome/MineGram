@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: luu <gerydel28@gmail.com>
+Date: Wed, 22 Jul 2026 21:24:47 +0600
+Subject: Add a toggle for a persistent snow effect in chats
+
+---
+ .../ui/Components/SizeNotifierFrameLayout.java         | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/TMessagesProj/src/main/java/org/telegram/ui/Components/SizeNotifierFrameLayout.java b/TMessagesProj/src/main/java/org/telegram/ui/Components/SizeNotifierFrameLayout.java
+index 0000000..0000000 100644
+--- a/TMessagesProj/src/main/java/org/telegram/ui/Components/SizeNotifierFrameLayout.java
++++ b/TMessagesProj/src/main/java/org/telegram/ui/Components/SizeNotifierFrameLayout.java
+@@ -557,8 +557,16 @@ public class SizeNotifierFrameLayout extends FrameLayout implements Theme.Colora
+         }
+     }
+ 
++    private boolean inu_snowLogged;
+     private void checkSnowflake(Canvas canvas) {
+-        if (backgroundView != null && Theme.canStartHolidayAnimation() && LiteMode.isEnabled(LiteMode.FLAG_CHAT_BACKGROUND)) {
++        if (!inu_snowLogged) {
++            inu_snowLogged = true;
++            android.util.Log.d("MintgramSnow", "checkSnowflake: backgroundView=" + (backgroundView != null)
++                + " holiday=" + Theme.canStartHolidayAnimation()
++                + " toggle=" + desu.mintgram.InuConfig.SNOW_EFFECT.getValue()
++                + " liteModeChatBg=" + LiteMode.isEnabled(LiteMode.FLAG_CHAT_BACKGROUND));
++        }
++        if (backgroundView != null && (Theme.canStartHolidayAnimation() || desu.mintgram.InuConfig.SNOW_EFFECT.getValue()) && LiteMode.isEnabled(LiteMode.FLAG_CHAT_BACKGROUND)) {
+             if (snowflakesEffect == null) {
+                 snowflakesEffect = new SnowflakesEffect(1);
+                 snowflakesEffect.setForcedColor(0xFFFFFFFF);
