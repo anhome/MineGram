@@ -20,7 +20,7 @@ the same change.
 8. **Prefer data-layer patches over UI-layer** — one hook in a controller beats fifteen hooks in views.
 9. **Never touch `TLRPC.java`** — auto-generated, rebasing changes there is hell.
 10. **Never touch stock DB schema or `LAST_DB_VERSION`** — fork state goes in `inu_*` tables / `inu_kv` via `InuDatabaseHelper`.
-11. **No LSP, no local build.** Don't try to compile.
+11. **No LSP. Local builds are user-initiated only.** Do not compile by default, but when the user explicitly asks to build, install, or test an APK, run the appropriate local Gradle build and report the result.
 12. **Debug logs use `android.util.Log.d`**, not `FileLog`.
 13. **Prefer non-`_solar` icons** when an alternative exists.
 
@@ -142,7 +142,7 @@ Conventions: expose the minimum, promote `private` → `public` over duplicating
 
 ## Helpers
 
-Live in `src/kotlin/helpers/`. Sub-packages by feature area: `chat/`, `dialogs/`, `menu/`, `translate/`, `search/`, `media/`, `font/`, `update/`, `cloud/`, `security/`, `theme/`, `profile/`, `icons/`, `maps/`, `notifications/`. Cross-cutting / standalone ones stay flat.
+Live in `src/kotlin/helpers/`. Sub-packages by feature area: `calls/`, `chat/`, `dialogs/`, `menu/`, `translate/`, `search/`, `media/`, `font/`, `update/`, `cloud/`, `security/`, `theme/`, `profile/`, `icons/`, `maps/`, `notifications/`. Cross-cutting / standalone ones stay flat.
 
 Naming (don't mass-rename):
 - `*Helper` = feature-coordinator singleton
@@ -167,7 +167,7 @@ Currently exposed (update this table when adding):
 | `onDeepLink(LaunchActivity, Intent?)` | deeplink handling | passcode + settings deeplinks |
 | `onAuthSuccess(Int)` | login flow | clear per-account passcode |
 | `onMessagesControllerCreated(MessagesController, Int)` | `MessagesController.<init>` | per-account setup (maps provider; registers the `didReceiveNewMessages` → `onNewMessage` observer) |
-| `onNewMessage(TLRPC.Message, Int)` | `didReceiveNewMessages` observer | generic new-message dispatch (all arrival paths incl. difference catch-up); fans out to `UpdateHelper` etc. |
+| `onNewMessage(MessageObject, Int)` | `didReceiveNewMessages` observer | generic new-message dispatch (all arrival paths incl. difference catch-up); fans out to updates, folders, and channel auto reactions |
 | `syncDoubleTapDelay()` | fork + `init` | propagate `DOUBLE_TAP_DELAY` into stock gesture detectors |
 | `syncAnimationSpeed()` | fork + `init` | propagate `ANIMATION_SPEED` into stock animators |
 | `getCurrentAppIconLicense()` | About page | current launcher icon's license string |

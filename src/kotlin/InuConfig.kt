@@ -465,6 +465,35 @@ object InuConfig {
     val CALL_CONFIRMATION = BoolItem("call_confirmation", true)
 
     @JvmField
+    val CALL_RECORDING = BoolItem("call_recording", false)
+
+    @JvmField
+    val CALL_SOUNDPAD = BoolItem("call_soundpad", false)
+
+    class CallRecordingFormatItem : IntItem("call_recording_format", OPUS) {
+        companion object {
+            const val OPUS = 0
+            const val AAC = 1
+            const val WAV = 2
+        }
+    }
+
+    @JvmField
+    val CALL_RECORDING_FORMAT = CallRecordingFormatItem()
+
+    @JvmField
+    val CALL_RECORDING_BITRATE = IntItem("call_recording_bitrate", 64)
+
+    @JvmField
+    val SPOTIFY_MUSIC_SEARCH = BoolItem("spotify_music_search", true)
+
+    @JvmField
+    val DEAD_CHANNELS = BoolItem("dead_channels", false)
+
+    @JvmField
+    val SETTINGS_SWIPE_NAVIGATION = BoolItem("settings_swipe_navigation", false)
+
+    @JvmField
     val CONFIRM_INTERNAL_LINKS = BoolItem("confirm_internal_links", false)
 
     @JvmField
@@ -623,6 +652,9 @@ object InuConfig {
 
     @JvmField
     val PINNED_REACTIONS = PinnedReactionsHelper.ConfigItem("pinned_reactions")
+
+    @JvmField
+    val AUTO_REACTIONS = StringItem("auto_reactions", "")
 
     @JvmField
     val OLD_MENTION_INDICATOR = BoolItem("old_mention_indicator", true)
@@ -832,6 +864,18 @@ object InuConfig {
 
     @JvmField
     val ONBOARDING_SHOWN = BoolItem("onboarding_shown", false, exportable = false)
+
+    @JvmField
+    val FLIP_ONBOARDING_SHOWN = BoolItem("flip_onboarding_shown", false, exportable = false)
+
+    @JvmField
+    val FLIP_DEVICE_MODE = BoolItem("flip_device_mode", false, exportable = false)
+
+    @JvmField
+    val FLIP_FLOATING_KEYBOARD = BoolItem("flip_floating_keyboard", false, exportable = false)
+
+    @JvmField
+    val DEVICE_PROFILE_FINGERPRINT = StringItem("device_profile_fingerprint", "", exportable = false)
 
     // AI assistant
     @JvmField

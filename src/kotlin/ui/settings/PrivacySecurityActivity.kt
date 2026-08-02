@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import desu.mintgram.InuConfig
 import desu.mintgram.SearchRegistry
 import desu.mintgram.helpers.InuUtils
+import desu.mintgram.helpers.channels.DeadChannelHelper
 import desu.mintgram.helpers.UrlCleanerHelper
 import desu.mintgram.helpers.icons.IconPackStorage
 import desu.mintgram.helpers.security.BiometricHelper
@@ -16,6 +17,7 @@ import desu.mintgram.helpers.security.ParanoiaHelper
 import desu.mintgram.helpers.security.PasscodeHelper
 import desu.mintgram.helpers.update.UpdateHelper
 import desu.mintgram.ui.settings.ai.AiAssistantSettingsActivity
+import desu.mintgram.ui.settings.channels.AutoReactionsActivity
 import desu.mintgram.ui.settings.feed.FeedChannelsActivity
 import desu.mintgram.ui.settings.icons.IconPacksActivity
 import desu.mintgram.ui.settings.pillstack.PillStackSettingsActivity
@@ -390,6 +392,20 @@ class PrivacySecurityActivity : SettingsPageActivity() {
 
     private fun fillFeatures(items: ArrayList<UItem>) {
         items.add(
+            UItem.asCheck(
+                TOGGLE_DEAD_CHANNELS,
+                LocaleController.getString(R.string.InuDeadChannels),
+            ).setChecked(InuConfig.DEAD_CHANNELS.value)
+        )
+        items.add(UItem.asShadow(null))
+        items.add(
+            UItem.asButton(
+                BUTTON_CALLS,
+                R.drawable.msg_voice_headphones,
+                LocaleController.getString(R.string.InuCallsSettings)
+            )
+        )
+        items.add(
             UItem.asButton(
                 BUTTON_AI_ASSISTANT,
                 R.drawable.magic_stick_solar,
@@ -401,6 +417,13 @@ class PrivacySecurityActivity : SettingsPageActivity() {
                 BUTTON_FEED,
                 R.drawable.msg_discussion,
                 LocaleController.getString(R.string.InuFeed)
+            )
+        )
+        items.add(
+            UItem.asButton(
+                BUTTON_AUTO_REACTIONS,
+                R.drawable.msg_reactions,
+                LocaleController.getString(R.string.InuAutoReactions)
             )
         )
         items.add(
@@ -449,11 +472,19 @@ class PrivacySecurityActivity : SettingsPageActivity() {
             BUTTON_CAMERA_LOCK -> presentFragment(CameraLockSettingsActivity())
 
             BUTTON_ICON_REPLACEMENT -> presentFragment(IconPacksActivity())
+            BUTTON_CALLS -> presentFragment(CallsSettingsActivity())
             BUTTON_AI_ASSISTANT -> presentFragment(AiAssistantSettingsActivity())
             BUTTON_FEED -> presentFragment(FeedChannelsActivity())
+            BUTTON_AUTO_REACTIONS -> presentFragment(AutoReactionsActivity())
             BUTTON_PILL_STACK -> presentFragment(PillStackSettingsActivity())
             BUTTON_DRAWER -> presentFragment(DrawerSettingsActivity())
             BUTTON_UPDATES -> UpdateHelper.runManualCheck(this)
+
+            TOGGLE_DEAD_CHANNELS -> {
+                val new = InuConfig.DEAD_CHANNELS.toggle()
+                (view as? TextCheckCell)?.isChecked = new
+                DeadChannelHelper.onFeatureChanged(new)
+            }
 
             TOGGLE_SUPER_OPTIMIZATION_MODE -> {
                 val new = InuConfig.SUPER_OPTIMIZATION_MODE.toggle()
@@ -642,11 +673,14 @@ class PrivacySecurityActivity : SettingsPageActivity() {
         private val TOGGLE_AVATAR_SINGLE_CORNER_RADIUS = InuUtils.generateId()
         private val TOGGLE_SNOW_EFFECT = InuUtils.generateId()
         private val BUTTON_AI_ASSISTANT = InuUtils.generateId()
+        private val BUTTON_CALLS = InuUtils.generateId()
         private val BUTTON_FEED = InuUtils.generateId()
+        private val BUTTON_AUTO_REACTIONS = InuUtils.generateId()
         private val BUTTON_PILL_STACK = InuUtils.generateId()
         private val BUTTON_DRAWER = InuUtils.generateId()
         private val TOGGLE_SUPER_OPTIMIZATION_MODE = InuUtils.generateId()
         private val BUTTON_UPDATES = InuUtils.generateId()
+        private val TOGGLE_DEAD_CHANNELS = InuUtils.generateId()
 
         @JvmField val PAGE = SearchRegistry.Page(
             slug = "privacy-security",
@@ -659,6 +693,7 @@ class PrivacySecurityActivity : SettingsPageActivity() {
                 SearchRegistry.Entry("strip-tracking-params-paste", R.string.InuStripTrackingParamsOnPaste, TOGGLE_STRIP_TRACKING_PARAMS_ON_PASTE),
                 SearchRegistry.Entry("disable-draft-upload", R.string.InuDisableDraftUpload, TOGGLE_DISABLE_DRAFT_UPLOAD),
                 SearchRegistry.Entry("auto-read-archived-chats", R.string.InuAutoReadArchivedChats, TOGGLE_AUTO_READ_ARCHIVED_CHATS),
+                SearchRegistry.Entry("calls-settings", R.string.InuCallsSettings, BUTTON_CALLS),
                 SearchRegistry.Entry("ghost-hide-read-status", R.string.InuGhostHideReadStatus, TOGGLE_GHOST_HIDE_READ_STATUS),
                 SearchRegistry.Entry("ghost-hide-online-status", R.string.InuGhostHideOnlineStatus, TOGGLE_GHOST_HIDE_ONLINE_STATUS),
                 SearchRegistry.Entry("ghost-hide-typing-status", R.string.InuGhostHideTypingStatus, TOGGLE_GHOST_HIDE_TYPING_STATUS),
@@ -670,12 +705,12 @@ class PrivacySecurityActivity : SettingsPageActivity() {
                 SearchRegistry.Entry("icon-replacement", R.string.InuIconReplacement, BUTTON_ICON_REPLACEMENT),
                 SearchRegistry.Entry("avatar-shape", R.string.InuAvatarShape, TOGGLE_AVATAR_SINGLE_CORNER_RADIUS),
                 SearchRegistry.Entry("snow-effect", R.string.InuSnowEffect, TOGGLE_SNOW_EFFECT),
-                SearchRegistry.Entry("ai-assistant", R.string.InuAiAssistant, BUTTON_AI_ASSISTANT),
                 SearchRegistry.Entry("feed", R.string.InuFeed, BUTTON_FEED),
-                SearchRegistry.Entry("pill-stack", R.string.InuPillStack, BUTTON_PILL_STACK),
+                SearchRegistry.Entry("privacy-pill-stack", R.string.InuPillStack, BUTTON_PILL_STACK),
                 SearchRegistry.Entry("navigation-drawer-entry", R.string.InuNavigationDrawer, BUTTON_DRAWER),
                 SearchRegistry.Entry("super-optimization-mode", R.string.InuSuperOptimizationMode, TOGGLE_SUPER_OPTIMIZATION_MODE),
                 SearchRegistry.Entry("updates", R.string.InuUpdatesRow, BUTTON_UPDATES),
+                SearchRegistry.Entry("features-dead-channels", R.string.InuDeadChannels, TOGGLE_DEAD_CHANNELS),
             ),
         )
     }

@@ -11,6 +11,9 @@ most things are toggleable in `Settings → Mintgram`, with sensible opinionated
 
 - 🐶 snow effect in chats year-round - *concept from [AyuGram](https://github.com/AyuGram/AyuGram4A)*, implemented by reusing stock's own New Year snowflake effect (`SnowflakesEffect`/`checkSnowflake`), normally only active on January 1st
 - navigation drawer instead of bottom tabs, like in older Telegram versions
+- 🐶 automatic Samsung Galaxy Z Flip profile (including Z Flip8): first-run device detection, dedicated welcome sheet, compact responsive drawer, cover-screen/main-screen resizing, an in-app floating keyboard, and a camera-safe left-side attachment/voice action cluster for the FlexWindow
+- 🌸 refreshed MintGram branding across the launcher, splash, onboarding, settings, and notifications
+- ⭐ verified MintGramTG channel notice and a five-second rainbow jelly-star thank-you animation after a successful paid reaction in the official channel
 - monet (material you) theme support - *based on [NagramX](https://github.com/risin42/NagramX)*, 🐶 improved. plus a quick switcher in appearance settings (light/dark/amoled/auto)
 - 🐶 classic ui mode for folders bar, shared media tabs, global search and chat elements (reverts the >12.6 "liquid glass" look)
 - icon replacement (currently: solar pack, [480 Design](https://t.me/Design480)) - *ported from [NagramX](https://github.com/risin42/NagramX)*
@@ -49,9 +52,12 @@ most things are toggleable in `Settings → Mintgram`, with sensible opinionated
 - 🐶 crash report sheet: catches uncaught exceptions, offers to share the log on next launch, posts a tap-to-restart notification
 - 🐶 first-run onboarding sheet: shown once after the first login, highlights the client's fork features and links to the MintGramTG channel
 - keep search query after picking a result in peer selection screens
+- 🐶 swipe left/right between the main Mintgram settings sections, with slider gestures excluded
+- find the currently playing profile/chat music track in Spotify from the player menu
 
 ## dialogs list / main page
 
+- 🐶 dead channels: locally follow a public broadcast channel without joining or changing its member count; it remains in chats and local search, periodically receives posts, and uses local unread notifications
 - bottom tabs: 🐶 compact mode, hide contacts tab, hide bar entirely
 - double-tap account tab to switch to next account
 - long-tap "chats" tab to pick folder from menu
@@ -166,6 +172,10 @@ most things are toggleable in `Settings → Mintgram`, with sensible opinionated
 - passkey login
 - qr login
 - password autofill hints in login (for password managers)
+- 🐶 dual plugin runtime: existing Python plugins plus packaged Java/Kotlin (DEX) plugins with typed lifecycle, Telegram request/update/send hooks, settings, assets, safe mode and watchdog integration
+- 🐶 local private/group-call recorder: an animated in-call recorder with timer, live waveform and stop button; saves local and remote audio in separate stereo channels as Opus/Ogg or AAC/M4A at 64–96 kbit/s, with lossless WAV available; saved recordings can be played and sent from their own settings page
+- 🐶 private/group-call tools: one blue/green animated call button expands into the recorder and Discord-style soundpad; includes four bundled 48 kbit/s sounds plus user-imported audio, mixed into Telegram's outgoing PCM stream and local playout so everyone hears it
+- 🐶 per-channel auto reactions: choose one of a channel's allowed reactions and apply it to new posts while Mintgram is online
 - account limit raised to 8 (premium gating disabled)
 - 🐶 customizable account order
 - per-account passcodes, hidden accounts, panic code, hidden settings deeplink - *ported from [Nekogram](https://github.com/Nekogram/Nekogram)*
@@ -276,6 +286,7 @@ most things are toggleable in `Settings → Mintgram`, with sensible opinionated
 - fix camera2api a/v sync issue in round messages
 - forward bar showing stale message count/senders after deselecting messages in the forward options sheet
 - cross-peer reply: clear stale quote so a leftover quote-reply target doesn't override the new one at send
+- media send lock now authorizes every photo/video in a selected album instead of sending only its first item
 - phantom empty dialog rows after peeking a non-joined channel / discuss group
 - expand emoji tabs when there's enough space to fit without scrolling
 - "pause music on media" now lets external players auto-resume (transient focus instead of indefinite)
@@ -299,3 +310,12 @@ most things are toggleable in `Settings → Mintgram`, with sensible opinionated
 - notifications for chats read on another device no longer linger forever when the app process was killed in between (stock only tracked posted notifications in memory)
 - crash long-pressing a sticker set while off-screen rows are cached (reorder update bound null item on cached/hidden holders)
 - crash cutting out a sticker after the photo editor recycled the source image mid-segmentation
+
+## 🧩 plugin platform
+
+- Java/Kotlin JVM plugin runtime alongside the legacy Python engine
+- redesigned plugin hub with themed plugin cards, quick enable/disable, package sharing
+  and guarded reinstall-from-file actions
+- JVM plugin action rows for opening plugin-owned tools such as the separate Mint IDE plugin
+- separate Mint IDE plugin: Java editor, multiple named projects with ready SDK 2.1
+  templates, offline ECJ/D8 build, metadata/image packaging, automatic installation and sharing

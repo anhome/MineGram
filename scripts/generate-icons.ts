@@ -171,6 +171,44 @@ function buildAdaptiveIcon(foreground: string): string {
 `
 }
 
+function buildRasterLayer(drawable: string): string {
+  return `<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <bitmap android:src="${drawable}" android:gravity="fill" />
+    </item>
+</layer-list>
+`
+}
+
+function buildRasterSizedLayer(drawable: string): string {
+  return `<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:width="24dp" android:height="24dp" android:gravity="center">
+        <bitmap android:src="${drawable}" android:gravity="fill" />
+    </item>
+</layer-list>
+`
+}
+
+function buildTransparentDrawable(): string {
+  return `<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@android:color/transparent" />
+</shape>
+`
+}
+
+function buildRasterAdaptiveIcon(): string {
+  return `<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@mipmap/icon_background_mint" />
+    <foreground android:drawable="@mipmap/icon_foreground_mint" />
+    <monochrome android:drawable="@drawable/icon_plane_inu" />
+</adaptive-icon>
+`
+}
+
 function buildBackgroundVector(): string {
   return `<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
@@ -214,16 +252,16 @@ async function loadSvg(relPath: string): Promise<{ shapes: SvgShape[], srcW: num
   return { shapes: parseSvgBody(svg), srcW: Number(viewBox[1]), srcH: Number(viewBox[2]) }
 }
 
-const fg = await loadSvg('src/res/launcher/icon.svg')
-const mono = await loadSvg('src/res/launcher/icon-mono.svg')
-
-const foreground = buildForegroundVector(fg.shapes, fg.srcW, fg.srcH, false)
-const foregroundDebug = buildForegroundVector(fg.shapes, fg.srcW, fg.srcH, false, true)
-const monochrome = buildForegroundVector(mono.shapes, mono.srcW, mono.srcH, true)
-const settingsIcon = buildSettingsVector(mono.shapes, mono.srcW, mono.srcH)
-const notificationIcon = buildNotificationVector(mono.shapes, mono.srcW, mono.srcH)
-const background = buildBackgroundVector()
-const debugIcon = buildAdaptiveIcon('icon_foreground_inu_debug')
+// The production mark is a supplied raster artwork with a soft gradient. Its committed
+// density variants live in src/res/mipmap-*; keep generated wrappers pointed at those
+// assets so running this generator cannot silently restore the previous vector logo.
+const foreground = buildTransparentDrawable()
+const foregroundDebug = foreground
+const monochrome = buildRasterLayer('@drawable/icon_settings_mint')
+const settingsIcon = buildRasterSizedLayer('@drawable/icon_settings_mint')
+const notificationIcon = buildRasterSizedLayer('@drawable/icon_notification_mint')
+const background = buildRasterLayer('@mipmap/icon_background_mint')
+const debugIcon = buildRasterAdaptiveIcon()
 
 // the *_inu drawables back stock @mipmap/ic_launcher{,_round} (rewired by
 // misc__branding); the mipmap-debug wrappers override it for the debug build

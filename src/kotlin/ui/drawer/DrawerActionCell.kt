@@ -20,6 +20,9 @@ import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.FrameLayout
 import android.widget.TextView
 import desu.mintgram.InuConfig
+import desu.mintgram.helpers.FlipDeviceHelper
+import desu.mintgram.helpers.icons.DrawerIconPackHelper
+import desu.mintgram.helpers.menu.DrawerMenuConfig
 import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.DocumentObject
 import org.telegram.messenger.FileLoader
@@ -89,7 +92,7 @@ class DrawerActionCell(context: Context) : FrameLayout(context) {
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(
             MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(InuConfig.DRAWER_ROW_HEIGHT.value), MeasureSpec.EXACTLY)
+            MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(FlipDeviceHelper.drawerRowHeightDp(context)), MeasureSpec.EXACTLY)
         )
     }
 
@@ -98,13 +101,19 @@ class DrawerActionCell(context: Context) : FrameLayout(context) {
         textView.setTextColor(Theme.getColor(Theme.key_chats_menuItemText))
     }
 
-    fun setTextAndIcon(id: Int, text: CharSequence, resId: Int) {
+    fun setTextAndIcon(id: Int, text: CharSequence, resId: Int, item: DrawerMenuConfig.Item) {
         currentId = id
         try {
             textView.text = text
             textView.setTextColor(Theme.getColor(Theme.key_chats_menuItemText))
             imageView.setColorFilter(PorterDuffColorFilter(Theme.getColor(Theme.key_chats_menuItemIcon), PorterDuff.Mode.SRC_IN))
-            imageView.setImageResource(resId)
+            val packDrawable = DrawerIconPackHelper.resolve(item, resId)
+            if (packDrawable != null) {
+                imageView.imageReceiver.setImageBitmap(packDrawable)
+                imageView.invalidate()
+            } else {
+                imageView.setImageResource(resId)
+            }
         } catch (e: Throwable) {
             FileLog.e(e)
         }

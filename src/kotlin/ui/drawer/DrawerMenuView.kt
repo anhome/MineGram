@@ -51,7 +51,7 @@ class DrawerMenuView(context: Context) : ScrollView(context) {
 
                 is DrawerMenuHelper.Row.Static -> if (row.item == DrawerMenuConfig.Item.PROXY) {
                     DrawerProxyCell(context).apply {
-                        bind(row.label, row.icon)
+                        bind(row.label, row.icon, row.item)
                         setSwitchVisible(SharedConfig.proxyList.isNotEmpty())
                         setChecked(SharedConfig.isProxyEnabled())
                         onSwitchToggled = onProxySwitchToggled
@@ -61,7 +61,7 @@ class DrawerMenuView(context: Context) : ScrollView(context) {
                     DrawerActionCell(context).apply {
                         // Only Settings (old stable id 8) carries the pending-suggestion error badge.
                         val id = if (row.item == DrawerMenuConfig.Item.SETTINGS) 8 else 0
-                        setTextAndIcon(id, row.label, row.icon)
+                        setTextAndIcon(id, row.label, row.icon, row.item)
                         setOnClickListener { DrawerMenuHelper.onClick(row, navigation, dlc) }
                     }
                 }

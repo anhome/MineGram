@@ -15,7 +15,9 @@ import android.text.Spanned
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.text.style.ReplacementSpan
+import android.view.GestureDetector
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -54,6 +56,7 @@ abstract class SettingsPageActivity : UniversalFragment() {
             listView.setSections()
             actionBar.setAdaptiveBackground(listView)
             listView.clipToPadding = false
+            installSectionSwipe(context)
             // pre-scroll before first layout so the row is on-screen at open, no jump after transition.
             if (highlightItemId != -1) {
                 val index = indexOfItem(listView, highlightItemId)
@@ -61,6 +64,51 @@ abstract class SettingsPageActivity : UniversalFragment() {
                     listView.layoutManager.scrollToPositionWithOffset(index, AndroidUtilities.dp(60f))
                 }
             }
+        }
+    }
+
+    private fun installSectionSwipe(context: Context) {
+        val currentIndex = swipePages.indexOfFirst { it.matches(this) }
+        if (!InuConfig.SETTINGS_SWIPE_NAVIGATION.value || currentIndex < 0) return
+
+        var navigating = false
+        val detector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onDown(event: MotionEvent): Boolean = true
+
+            override fun onFling(
+                start: MotionEvent?,
+                end: MotionEvent,
+                velocityX: Float,
+                velocityY: Float,
+            ): Boolean {
+                start ?: return false
+                if (navigating || start.x < dp(32) || start.x > listView.width - dp(32)) return false
+                val deltaX = end.x - start.x
+                val deltaY = end.y - start.y
+                if (
+                    kotlin.math.abs(deltaX) < dp(96) ||
+                    kotlin.math.abs(velocityX) < 650f ||
+                    kotlin.math.abs(deltaX) < kotlin.math.abs(deltaY) * 1.6f ||
+                    kotlin.math.abs(velocityX) < kotlin.math.abs(velocityY)
+                ) return false
+
+                var touched: View? = listView.findChildViewUnder(start.x, start.y)
+                while (touched != null && touched !== listView) {
+                    val name = touched.javaClass.simpleName
+                    if (name.contains("Slider", true) || name.contains("SeekBar", true)) return false
+                    touched = touched.parent as? View
+                }
+
+                val nextIndex = if (deltaX < 0) currentIndex + 1 else currentIndex - 1
+                val next = swipePages.getOrNull(nextIndex) ?: return false
+                navigating = true
+                presentFragment(next.factory(), true)
+                return true
+            }
+        })
+        listView.setOnTouchListener { _, event ->
+            detector.onTouchEvent(event)
+            false
         }
     }
 
@@ -156,6 +204,11 @@ abstract class SettingsPageActivity : UniversalFragment() {
             }
             .show()
     }
+
+    private data class SwipePage(
+        val matches: (SettingsPageActivity) -> Boolean,
+        val factory: () -> SettingsPageActivity,
+    )
 
     protected fun mkTwoLineCheckItem(
         id: Int,
@@ -331,5 +384,16 @@ abstract class SettingsPageActivity : UniversalFragment() {
 
     companion object {
         private const val STICKY_BUTTON_HEIGHT = 64
+
+        private val swipePages = listOf(
+            SwipePage({ it is AppearanceSettingsActivity }, ::AppearanceSettingsActivity),
+            SwipePage({ it is ChatsSettingsActivity }, ::ChatsSettingsActivity),
+            SwipePage({ it is MessagesSettingsActivity }, ::MessagesSettingsActivity),
+            SwipePage({ it is DialogsSettingsActivity }, ::DialogsSettingsActivity),
+            SwipePage({ it is UserProfileSettingsActivity }, ::UserProfileSettingsActivity),
+            SwipePage({ it is AnnoyancesSettingsActivity }, ::AnnoyancesSettingsActivity),
+            SwipePage({ it is BehaviorSettingsActivity }, ::BehaviorSettingsActivity),
+            SwipePage({ it is TranslatorSettingsActivity }, ::TranslatorSettingsActivity),
+        )
     }
 }

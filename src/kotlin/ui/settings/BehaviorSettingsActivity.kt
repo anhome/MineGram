@@ -6,6 +6,7 @@ import desu.mintgram.InuConfig
 import desu.mintgram.SearchRegistry
 import desu.mintgram.helpers.InuUtils
 import desu.mintgram.helpers.ProxyVpnHelper
+import desu.mintgram.helpers.channels.DeadChannelHelper
 import desu.mintgram.helpers.chat.WebPreviewHelper
 import desu.mintgram.helpers.maps.MapsHelper
 import org.telegram.messenger.LocaleController
@@ -101,6 +102,22 @@ class BehaviorSettingsActivity : SettingsPageActivity() {
             ).setChecked(InuConfig.DISABLE_BROWSER_SWIPE_COLLAPSE.value)
         )
         items.add(
+            mkTwoLineCheckItem(
+                TOGGLE_SPOTIFY_MUSIC_SEARCH,
+                R.string.InuSpotifyMusicSearch,
+                R.string.InuSpotifyMusicSearchInfo,
+                { InuConfig.SPOTIFY_MUSIC_SEARCH.value },
+            )
+        )
+        items.add(
+            mkTwoLineCheckItem(
+                TOGGLE_DEAD_CHANNELS,
+                R.string.InuDeadChannels,
+                R.string.InuDeadChannelsInfo,
+                { InuConfig.DEAD_CHANNELS.value },
+            )
+        )
+        items.add(
             UItem.asButton(
                 BUTTON_WEB_PREVIEW_REPLACEMENTS,
                 LocaleController.getString(R.string.InuWebPreviewReplacements),
@@ -186,6 +203,17 @@ class BehaviorSettingsActivity : SettingsPageActivity() {
             TOGGLE_DISABLE_BROWSER_SWIPE_COLLAPSE -> {
                 val new = InuConfig.DISABLE_BROWSER_SWIPE_COLLAPSE.toggle()
                 (view as? TextCheckCell)?.isChecked = new
+            }
+
+            TOGGLE_SPOTIFY_MUSIC_SEARCH -> {
+                val new = InuConfig.SPOTIFY_MUSIC_SEARCH.toggle()
+                (view as? NotificationsCheckCell)?.isChecked = new
+            }
+
+            TOGGLE_DEAD_CHANNELS -> {
+                val new = InuConfig.DEAD_CHANNELS.toggle()
+                (view as? NotificationsCheckCell)?.isChecked = new
+                DeadChannelHelper.onFeatureChanged(new)
             }
 
             TOGGLE_GIF_SEEKBAR -> {
@@ -286,6 +314,8 @@ class BehaviorSettingsActivity : SettingsPageActivity() {
         private val TOGGLE_CALL_CONFIRMATION = InuUtils.generateId()
         private val TOGGLE_CONFIRM_INTERNAL_LINKS = InuUtils.generateId()
         private val TOGGLE_DISABLE_BROWSER_SWIPE_COLLAPSE = InuUtils.generateId()
+        private val TOGGLE_SPOTIFY_MUSIC_SEARCH = InuUtils.generateId()
+        private val TOGGLE_DEAD_CHANNELS = InuUtils.generateId()
         private val TOGGLE_GIF_SEEKBAR = InuUtils.generateId()
         private val BUTTON_WEB_PREVIEW_REPLACEMENTS = InuUtils.generateId()
         private val TOGGLE_AUTO_DISABLE_PROXY_ON_VPN = InuUtils.generateId()
@@ -314,6 +344,8 @@ class BehaviorSettingsActivity : SettingsPageActivity() {
                 SearchRegistry.Entry("call-confirmation", R.string.InuCallConfirmation, TOGGLE_CALL_CONFIRMATION),
                 SearchRegistry.Entry("confirm-internal-links", R.string.InuConfirmInternalLinks, TOGGLE_CONFIRM_INTERNAL_LINKS),
                 SearchRegistry.Entry("disable-browser-swipe-collapse", R.string.InuDisableBrowserSwipeCollapse, TOGGLE_DISABLE_BROWSER_SWIPE_COLLAPSE),
+                SearchRegistry.Entry("spotify-music-search", R.string.InuSpotifyMusicSearch, TOGGLE_SPOTIFY_MUSIC_SEARCH),
+                SearchRegistry.Entry("behavior-dead-channels", R.string.InuDeadChannels, TOGGLE_DEAD_CHANNELS),
                 SearchRegistry.Entry("gif-seekbar", R.string.InuGifSeekbar, TOGGLE_GIF_SEEKBAR),
                 SearchRegistry.Entry("web-preview-replacements", R.string.InuWebPreviewReplacements, BUTTON_WEB_PREVIEW_REPLACEMENTS),
                 SearchRegistry.Entry("auto-disable-proxy-on-vpn", R.string.InuAutoDisableProxyOnVpn, TOGGLE_AUTO_DISABLE_PROXY_ON_VPN),

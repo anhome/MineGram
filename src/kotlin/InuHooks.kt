@@ -10,6 +10,8 @@ import desu.mintgram.helpers.ProxyVpnHelper
 import desu.mintgram.helpers.ShortcutHelper
 import desu.mintgram.helpers.UrlCleanerHelper
 import desu.mintgram.helpers.cloud.CloudSettingsHelper
+import desu.mintgram.helpers.channels.AutoReactionHelper
+import desu.mintgram.helpers.channels.DeadChannelHelper
 import desu.mintgram.helpers.font.FontHelper
 import desu.mintgram.helpers.maps.MapsHelper
 import desu.mintgram.helpers.security.PasscodeHelper
@@ -37,6 +39,7 @@ object InuHooks {
     fun init(context: Context) {
         CrashReporter.install()
         InuConfig.load(context)
+        desu.mintgram.helpers.FlipDeviceHelper.applyProfileForCurrentDevice()
         FontHelper.init(context)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             FontHelper.installGlobal()
@@ -56,6 +59,7 @@ object InuHooks {
     @JvmStatic
     fun onMessagesControllerCreated(messagesController: MessagesController, account: Int) {
         MapsHelper.syncMapProvider(messagesController)
+        DeadChannelHelper.onControllerCreated(messagesController, account)
         AndroidUtilities.runOnUIThread {
             NotificationCenter.getInstance(account).addObserver(
                 NotificationCenter.NotificationCenterDelegate { id, acc, args ->
@@ -72,6 +76,9 @@ object InuHooks {
     fun onNewMessage(message: MessageObject, account: Int) {
         if (message.messageOwner != null) UpdateHelper.onNewMessage(message.messageOwner)
         desu.mintgram.helpers.dialogs.FolderHelper.onNewMessage(message, account)
+        if (!DeadChannelHelper.isWatched(account, message.dialogId)) {
+            AutoReactionHelper.onNewMessage(message, account)
+        }
     }
 
     @JvmStatic

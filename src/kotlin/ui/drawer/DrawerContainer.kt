@@ -24,6 +24,7 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import desu.mintgram.InuConfig
+import desu.mintgram.helpers.FlipDeviceHelper
 import desu.mintgram.helpers.dialogs.DrawerMenuHelper
 import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.MessagesController
@@ -81,9 +82,10 @@ class DrawerContainer(private val host: DrawerLayoutContainer, private val nav: 
         visibility = INVISIBLE
         setWillNotDraw(false)
 
-        val width = minOf(
-            AndroidUtilities.dp(320f),
-            minOf(AndroidUtilities.displaySize.x, AndroidUtilities.displaySize.y) - AndroidUtilities.dp(56f)
+        val width = FlipDeviceHelper.drawerWidthPx(
+            context,
+            AndroidUtilities.displaySize.x,
+            AndroidUtilities.displaySize.y,
         )
 
         drawerPanel = FrameLayout(context)
@@ -129,6 +131,22 @@ class DrawerContainer(private val host: DrawerLayoutContainer, private val nav: 
             shadowLeft = resources.getDrawable(R.drawable.header_shadow)
         } catch (_: Exception) {
         }
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        if (w <= 0 || h <= 0) return
+        val oldPanelWidth = drawerPanel.layoutParams.width.coerceAtLeast(1)
+        val newPanelWidth = FlipDeviceHelper.drawerWidthPx(context, w, h)
+        if (oldPanelWidth == newPanelWidth) return
+
+        val progress = (drawerPosition / oldPanelWidth).coerceIn(0f, 1f)
+        drawerPanel.layoutParams = drawerPanel.layoutParams.apply { width = newPanelWidth }
+        drawerPosition = if (drawerOpened) newPanelWidth.toFloat() else newPanelWidth * progress
+        drawerPanel.translationX = drawerPosition - newPanelWidth
+        scrimOpacity = drawerPosition / newPanelWidth
+        requestLayout()
+        invalidate()
     }
 
     fun setAllowOpenDrawer(value: Boolean, animated: Boolean) {

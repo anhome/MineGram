@@ -12,12 +12,24 @@ import org.telegram.ui.ActionBar.BaseFragment
 // it; stock call sites must treat null as "no plugins loaded" and behave exactly as stock.
 object PluginsBridge {
     interface Hooks {
-        // Return null to cancel/drop the update or send. Non-null results are only used for the
-        // cancellation signal - stock call sites don't substitute a modified object back in, since
-        // the surrounding methods capture the original parameter in lambdas throughout their body.
+        // Return null to cancel/drop the operation. Plugins may mutate the supplied TL object in
+        // place; update hooks also support replacing the individual update object.
+        fun executePreRequestHook(type: String, account: Int, request: org.telegram.tgnet.TLObject): org.telegram.tgnet.TLObject?
+        fun executePostRequestHookBridge(
+            type: String,
+            account: Int,
+            response: org.telegram.tgnet.TLObject?,
+            error: TLRPC.TL_error?,
+        ): PostRequestResult
+        fun executeUpdateHook(type: String, account: Int, update: TLRPC.Update): TLRPC.Update?
         fun executeUpdatesHook(type: String, account: Int, updates: TLRPC.Updates): TLRPC.Updates?
         fun executeSendMessageHook(account: Int, params: SendMessagesHelper.SendMessageParams): SendMessagesHelper.SendMessageParams?
     }
+
+    data class PostRequestResult(
+        val response: org.telegram.tgnet.TLObject?,
+        val error: TLRPC.TL_error?,
+    )
 
     @JvmField
     var instance: Hooks? = null

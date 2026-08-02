@@ -10,6 +10,9 @@ import android.view.ViewConfiguration
 import android.widget.FrameLayout
 import android.widget.TextView
 import desu.mintgram.InuConfig
+import desu.mintgram.helpers.FlipDeviceHelper
+import desu.mintgram.helpers.icons.DrawerIconPackHelper
+import desu.mintgram.helpers.menu.DrawerMenuConfig
 import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.LocaleController
 import org.telegram.ui.ActionBar.Theme
@@ -106,13 +109,19 @@ class DrawerProxyCell(context: Context) : FrameLayout(context) {
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(
             MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(InuConfig.DRAWER_ROW_HEIGHT.value), MeasureSpec.EXACTLY)
+            MeasureSpec.makeMeasureSpec(AndroidUtilities.dp(FlipDeviceHelper.drawerRowHeightDp(context)), MeasureSpec.EXACTLY)
         )
     }
 
-    fun bind(text: CharSequence, iconRes: Int) {
+    fun bind(text: CharSequence, iconRes: Int, item: DrawerMenuConfig.Item) {
         textView.text = text
-        imageView.setImageResource(iconRes)
+        val packDrawable = DrawerIconPackHelper.resolve(item, iconRes)
+        if (packDrawable != null) {
+            imageView.imageReceiver.setImageBitmap(packDrawable)
+            imageView.invalidate()
+        } else {
+            imageView.setImageResource(iconRes)
+        }
     }
 
     fun setChecked(checked: Boolean) {

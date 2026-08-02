@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.collection.LongSparseArray
+import desu.mintgram.InuConfig
 import desu.mintgram.SearchRegistry
 import desu.mintgram.helpers.InuUtils
 import desu.mintgram.helpers.cloud.SettingsBackupHelper
@@ -16,6 +17,7 @@ import org.telegram.messenger.SendMessagesHelper
 import org.telegram.messenger.Utilities
 import org.telegram.tgnet.TLRPC
 import org.telegram.ui.ChatActivity
+import org.telegram.ui.Cells.NotificationsCheckCell
 import org.telegram.ui.Components.BulletinFactory
 import org.telegram.ui.Components.ShareAlert
 import org.telegram.ui.Components.UItem
@@ -76,6 +78,14 @@ class InuSettingsActivity : SettingsPageActivity() {
 
         items.add(UItem.asHeader(LocaleController.getString(R.string.InuOther)))
         items.add(
+            mkTwoLineCheckItem(
+                TOGGLE_SWIPE_NAVIGATION,
+                R.string.InuSettingsSwipeNavigation,
+                R.string.InuSettingsSwipeNavigationInfo,
+                { InuConfig.SETTINGS_SWIPE_NAVIGATION.value },
+            )
+        )
+        items.add(
             UItem.asButton(
                 BUTTON_BEHAVIOR,
                 R.drawable.avd_speed,
@@ -124,6 +134,10 @@ class InuSettingsActivity : SettingsPageActivity() {
 
     override fun onClick(item: UItem, view: View, position: Int, x: Float, y: Float) {
         when (item.id) {
+            TOGGLE_SWIPE_NAVIGATION -> {
+                val checked = InuConfig.SETTINGS_SWIPE_NAVIGATION.toggle()
+                (view as? NotificationsCheckCell)?.isChecked = checked
+            }
             BUTTON_GENERAL -> presentFragment(AppearanceSettingsActivity())
             BUTTON_CHATS -> presentFragment(ChatsSettingsActivity())
             BUTTON_MESSAGES -> presentFragment(MessagesSettingsActivity())
@@ -131,6 +145,11 @@ class InuSettingsActivity : SettingsPageActivity() {
             BUTTON_USER_PROFILE -> presentFragment(UserProfileSettingsActivity())
             BUTTON_ANNOYANCES -> presentFragment(AnnoyancesSettingsActivity())
             BUTTON_BEHAVIOR -> presentFragment(BehaviorSettingsActivity())
+            BUTTON_DEAD_CHANNELS -> {
+                val new = InuConfig.DEAD_CHANNELS.toggle()
+                (view as? org.telegram.ui.Cells.NotificationsCheckCell)?.isChecked = new
+                desu.mintgram.helpers.channels.DeadChannelHelper.onFeatureChanged(new)
+            }
             BUTTON_TRANSLATOR -> presentFragment(TranslatorSettingsActivity())
             BUTTON_ABOUT -> presentFragment(AboutActivity())
             BUTTON_EXPORT -> launchExport()
@@ -240,12 +259,14 @@ class InuSettingsActivity : SettingsPageActivity() {
 
     companion object {
         private val BUTTON_GENERAL = InuUtils.generateId()
+        private val TOGGLE_SWIPE_NAVIGATION = InuUtils.generateId()
         private val BUTTON_CHATS = InuUtils.generateId()
         private val BUTTON_MESSAGES = InuUtils.generateId()
         private val BUTTON_DIALOGS = InuUtils.generateId()
         private val BUTTON_USER_PROFILE = InuUtils.generateId()
         private val BUTTON_ANNOYANCES = InuUtils.generateId()
         private val BUTTON_BEHAVIOR = InuUtils.generateId()
+        private val BUTTON_DEAD_CHANNELS = InuUtils.generateId()
         private val BUTTON_TRANSLATOR = InuUtils.generateId()
         private val BUTTON_ABOUT = InuUtils.generateId()
         private val BUTTON_EXPORT = InuUtils.generateId()
@@ -265,6 +286,7 @@ class InuSettingsActivity : SettingsPageActivity() {
                 SearchRegistry.Entry("backup-export", R.string.InuBackupExport, BUTTON_EXPORT),
                 SearchRegistry.Entry("backup-import", R.string.InuBackupImport, BUTTON_IMPORT),
                 SearchRegistry.Entry("cloud-sync", R.string.InuCloudSync, BUTTON_CLOUD_SYNC),
+                SearchRegistry.Entry("settings-swipe-navigation", R.string.InuSettingsSwipeNavigation, TOGGLE_SWIPE_NAVIGATION),
             ),
         )
     }

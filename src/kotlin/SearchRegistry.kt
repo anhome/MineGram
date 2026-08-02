@@ -6,6 +6,9 @@ import desu.mintgram.helpers.security.SettingsLockHelper
 import desu.mintgram.ui.settings.AnnoyancesSettingsActivity
 import desu.mintgram.ui.settings.AppearanceSettingsActivity
 import desu.mintgram.ui.settings.BehaviorSettingsActivity
+import desu.mintgram.ui.settings.CallRecordingsActivity
+import desu.mintgram.ui.settings.CallsSettingsActivity
+import desu.mintgram.ui.settings.channels.AutoReactionsActivity
 import desu.mintgram.ui.settings.ChatsSettingsActivity
 import desu.mintgram.ui.settings.DialogsSettingsActivity
 import desu.mintgram.ui.settings.DrawerSettingsActivity
@@ -53,6 +56,9 @@ object SearchRegistry {
             UserProfileSettingsActivity.PAGE,
             AnnoyancesSettingsActivity.PAGE,
             BehaviorSettingsActivity.PAGE,
+            CallsSettingsActivity.PAGE,
+            CallRecordingsActivity.PAGE,
+            AutoReactionsActivity.PAGE,
             TranslatorSettingsActivity.PAGE,
             PrivacySecurityActivity.PAGE,
             AiAssistantSettingsActivity.PAGE,
@@ -69,7 +75,10 @@ object SearchRegistry {
         buildMap {
             for (page in pages) {
                 fun add(slug: String, target: Target) {
-                    require(put(slug, target) == null) { "SearchRegistry: duplicate slug '$slug'" }
+                    // Keep the first registered target. A duplicate search slug must never
+                    // prevent LaunchActivity from starting; this can happen when two settings
+                    // pages expose the same feature.
+                    putIfAbsent(slug, target)
                 }
                 add(page.slug, Target(page, null))
                 for (entry in page.entries) add(entry.slug, Target(page, entry))

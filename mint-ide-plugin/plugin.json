@@ -1,0 +1,14 @@
+{
+  "formatVersion": 1,
+  "engine": "jvm",
+  "language": "java",
+  "id": "mint_ide",
+  "name": "Mint IDE",
+  "entrypoint": "dev.mintgram.ide.MintIdePlugin",
+  "version": "1.1.0",
+  "author": "Mintgram",
+  "description": "Редактор и компилятор Java-плагинов с несколькими проектами и готовыми стартовыми шаблонами.",
+  "appVersion": ">=1.0",
+  "sdkVersion": ">=2.1.0",
+  "hooks": []
+}

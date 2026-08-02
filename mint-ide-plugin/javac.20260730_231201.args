@@ -1,0 +1,14 @@
+-source
+8
+-target
+8
+-encoding
+UTF-8
+-classpath
+/opt/homebrew/share/android-commandlinetools/platforms/android-35/android.jar:/Users/lu/.gradle/caches/transforms-4/d0b1a5072dc621e78a514371e336d622/transformed/Aliuhook-1.1.4-api.jar:/Users/lu/Documents/Mintgram-project/project/mintgram/worktree/TMessagesProj_App/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes:/Users/lu/Documents/Mintgram-project/project/mintgram/worktree/TMessagesProj_App/build/tmp/kotlin-classes/debug:/Users/lu/Documents/Mintgram-project/project/mintgram/worktree/TMessagesProj/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes:/Users/lu/Documents/Mintgram-project/project/mintgram/worktree/TMessagesProj/build/tmp/kotlin-classes/debug
+-d
+/Users/lu/Documents/Mintgram-project/project/mintgram/mint-ide-plugin/build/engine-api-classes
+/Users/lu/Documents/Mintgram-project/project/mintgram/worktree/TMessagesProj_App/src/main/java/desu/mintgram/plugins/jvm/JvmPluginAdapter.java
+/Users/lu/Documents/Mintgram-project/project/mintgram/worktree/TMessagesProj_App/src/main/java/desu/mintgram/plugins/jvm/JvmPluginContext.java
+/Users/lu/Documents/Mintgram-project/project/mintgram/worktree/TMessagesProj_App/src/main/java/desu/mintgram/plugins/jvm/JvmActionSetting.java
+/Users/lu/Documents/Mintgram-project/project/mintgram/worktree/TMessagesProj_App/src/main/java/desu/mintgram/plugins/jvm/JvmSettings.java
