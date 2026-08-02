@@ -124,8 +124,9 @@ jobs:
           echo 'org.gradle.caching=true' >> ~/.gradle/gradle.properties
           # Keep the verification build below the GitHub-hosted runner memory limit.
           echo 'org.gradle.parallel=false' >> ~/.gradle/gradle.properties
-          echo 'org.gradle.workers.max=2' >> ~/.gradle/gradle.properties
-          echo 'org.gradle.jvmargs=-Xmx6144m -Dfile.encoding=UTF-8 -XX:+UseParallelGC' >> ~/.gradle/gradle.properties
+          echo 'org.gradle.workers.max=1' >> ~/.gradle/gradle.properties
+          # Leave headroom for the Android NDK/native compiler on hosted runners.
+          echo 'org.gradle.jvmargs=-Xmx4096m -Dfile.encoding=UTF-8 -XX:+UseParallelGC' >> ~/.gradle/gradle.properties
           echo 'android.native.buildOutput=verbose' >> ~/.gradle/gradle.properties
 
       - name: reset ccache stats
@@ -140,7 +141,7 @@ jobs:
           CCACHE_COMPILERCHECK: content
           CCACHE_SLOPPINESS: time_macros,file_macro,include_file_mtime,include_file_ctime,locale,system_headers
           CCACHE_BASEDIR: ${{ github.workspace }}/worktree
-        run: ./gradlew --no-daemon :TMessagesProj_App:assembleDebug
+        run: ./gradlew --no-daemon --max-workers=1 :TMessagesProj_App:assembleDebug --stacktrace
 
       - name: show ccache stats
         if: always()
