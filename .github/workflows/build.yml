@@ -40,6 +40,7 @@ permissions: {}
 
 env:
   ARTIFACT_NAME: ${{ inputs.artifact-name || format('mintgram-build-{0}', github.run_id) }}
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
@@ -75,7 +76,7 @@ jobs:
       - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
@@ -105,11 +106,6 @@ jobs:
         env:
           INU_BUILD: ${{ vars.INU_BUILD || '1' }}
         run: pnpm tsx scripts/ci/version.ts
-
-      - uses: gradle/actions/setup-gradle@0b6dd653ba04f4f93bf581ec31e66cbd7dcb644d # v4
-        with:
-          gradle-home-cache-cleanup: true
-          cache-read-only: ${{ github.event_name == 'pull_request' }}
 
       - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
         with:
