@@ -130,6 +130,7 @@ jobs:
         run: ccache -z
 
       - name: build (unsigned, debug-keyed)
+        if: github.event_name != 'push'
         working-directory: worktree
         env:
           COMMIT_ID: ${{ github.sha }}
@@ -145,6 +146,7 @@ jobs:
         run: ccache -s -v
 
       - name: stage artifacts
+        if: github.event_name != 'push'
         env:
           LAST_UPLOADED_SHA: ${{ vars.LAST_RELEASE_SHA }}
           PUSH_BEFORE: ${{ github.event.before }}
@@ -187,6 +189,7 @@ jobs:
             > out/build-info.json
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: github.event_name != 'push'
         with:
           name: ${{ env.ARTIFACT_NAME }}-unsigned
           path: out/*
