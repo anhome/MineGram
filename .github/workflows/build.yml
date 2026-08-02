@@ -117,6 +117,7 @@ jobs:
 
       - name: tune gradle
         run: |
+          mkdir -p "$HOME/.gradle"
           echo 'org.gradle.caching=true' >> ~/.gradle/gradle.properties
           # Keep the verification build below the GitHub-hosted runner memory limit.
           echo 'org.gradle.parallel=false' >> ~/.gradle/gradle.properties
