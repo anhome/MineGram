@@ -122,8 +122,12 @@ jobs:
       - name: tune gradle
         run: |
           echo 'org.gradle.caching=true' >> ~/.gradle/gradle.properties
-          echo 'org.gradle.parallel=true' >> ~/.gradle/gradle.properties
-          echo 'org.gradle.jvmargs=-Xmx8192m -Dfile.encoding=UTF-8 -XX:+UseParallelGC' >> ~/.gradle/gradle.properties
+          # Keep the release build below the GitHub-hosted runner memory limit.
+          # R8 plus the native toolchain can otherwise be OOM-killed while Gradle
+          # is also running parallel workers.
+          echo 'org.gradle.parallel=false' >> ~/.gradle/gradle.properties
+          echo 'org.gradle.workers.max=2' >> ~/.gradle/gradle.properties
+          echo 'org.gradle.jvmargs=-Xmx6144m -Dfile.encoding=UTF-8 -XX:+UseParallelGC' >> ~/.gradle/gradle.properties
           echo 'android.native.buildOutput=verbose' >> ~/.gradle/gradle.properties
 
       - name: reset ccache stats
