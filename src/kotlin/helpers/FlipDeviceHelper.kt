@@ -5,39 +5,59 @@ import android.os.Build
 import desu.mintgram.InuConfig
 import org.telegram.messenger.AndroidUtilities
 
-/** Device profile and responsive measurements for Samsung Galaxy Z Flip devices. */
+/** Device profile and responsive measurements for Android flip and foldable phones. */
 object FlipDeviceHelper {
-    private const val SAMSUNG = "samsung"
-    private const val FLIP_MODEL_PREFIX = "SM-F7"
-    private const val FLIP8_MODEL_PREFIX = "SM-F776"
+    enum class FoldableBrand(val title: String) {
+        SAMSUNG("Samsung"), MOTOROLA("Motorola"), XIAOMI("Xiaomi"), OPPO("OPPO"),
+        HONOR("HONOR"), HUAWEI("Huawei"), TECNO("TECNO"), INFINIX("Infinix"),
+        NUBIA("nubia"), OTHER("Android foldable")
+    }
+
+    private val foldablePattern = Regex(
+        "(?i)(z ?flip|galaxy ?z|razr|mix ?flip|mix ?fold|find ?n|find ?flip|magic ?v|mate ?x|pocket|phantom ?v|zero ?flip|nubia ?flip|\\bflip\\b|\\bfold\\b|sm-f7)"
+    )
 
     val isGalaxyZFlip8: Boolean
-        get() {
-            val avdName = emulatorAvdName().uppercase()
-            return (isSamsung() && Build.MODEL.orEmpty().uppercase().startsWith(FLIP8_MODEL_PREFIX)) ||
-                avdName.contains("FLIP8")
-        }
+        get() = isSamsung() && Build.MODEL.orEmpty().uppercase().startsWith("SM-F776") ||
+            emulatorAvdName().uppercase().contains("FLIP8")
 
     val isGalaxyZFlip: Boolean
+        get() = isSamsung() && (Build.MODEL.orEmpty().uppercase().startsWith("SM-F7") ||
+            Build.MODEL.orEmpty().uppercase().contains("Z FLIP") ||
+            Build.DEVICE.orEmpty().uppercase().contains("ZFLIP")) ||
+            emulatorAvdName().uppercase().contains("GALAXY_Z_FLIP")
+
+    /** True for supported clamshells and book-style foldables. */
+    val isSupportedFoldable: Boolean
+        get() = foldablePattern.containsMatchIn(deviceSignature()) ||
+            foldablePattern.containsMatchIn(emulatorAvdName())
+
+    val foldableBrand: FoldableBrand
         get() {
-            val avdName = emulatorAvdName().uppercase()
-            if (avdName.contains("GALAXY_Z_FLIP") || avdName.contains("GALAXY Z FLIP")) return true
-            if (!isSamsung()) return false
-            val model = Build.MODEL.orEmpty().uppercase()
-            val device = Build.DEVICE.orEmpty().uppercase()
-            return model.startsWith(FLIP_MODEL_PREFIX) ||
-                model.contains("Z FLIP") || device.contains("ZFLIP")
+            val value = deviceSignature()
+            return when {
+                value.contains("samsung") || value.contains("sm-f7") || value.contains("galaxy z") -> FoldableBrand.SAMSUNG
+                value.contains("motorola") || value.contains("razr") -> FoldableBrand.MOTOROLA
+                value.contains("xiaomi") || value.contains("mix flip") || value.contains("mix fold") -> FoldableBrand.XIAOMI
+                value.contains("oppo") || value.contains("find n") -> FoldableBrand.OPPO
+                value.contains("honor") || value.contains("magic v") -> FoldableBrand.HONOR
+                value.contains("huawei") || value.contains("mate x") || value.contains("pocket") -> FoldableBrand.HUAWEI
+                value.contains("tecno") || value.contains("phantom v") -> FoldableBrand.TECNO
+                value.contains("infinix") || value.contains("zero flip") -> FoldableBrand.INFINIX
+                value.contains("nubia") -> FoldableBrand.NUBIA
+                else -> FoldableBrand.OTHER
+            }
         }
 
     /** Called immediately after config loading, before LaunchActivity chooses its root layout. */
-    fun applyProfileForCurrentDevice() {
-        val fingerprint = "2|" + listOf(Build.MANUFACTURER, Build.MODEL, Build.DEVICE)
+    fun applyProfileForCurrentDevice(context: Context? = null) {
+        val fingerprint = "3|" + listOf(Build.BRAND, Build.MANUFACTURER, Build.MODEL, Build.DEVICE, Build.PRODUCT)
             .joinToString("|") { it.orEmpty().trim().lowercase() }
         if (InuConfig.DEVICE_PROFILE_FINGERPRINT.value == fingerprint) return
 
-        val flip = isGalaxyZFlip
-        InuConfig.FLIP_DEVICE_MODE.value = flip
-        if (flip) {
+        val foldable = isSupportedFoldable || context?.packageManager?.hasSystemFeature("android.hardware.sensor.hinge") == true
+        InuConfig.FLIP_DEVICE_MODE.value = foldable
+        if (foldable) {
             InuConfig.NAVIGATION_DRAWER.value = true
             InuConfig.DRAWER_ROW_HEIGHT.value = 44f
             InuConfig.DRAWER_AVATAR_SIZE.value = 56f
@@ -74,15 +94,18 @@ object FlipDeviceHelper {
     fun drawerRowHeightDp(context: Context): Float =
         if (isCompactWindow(context)) 40f else InuConfig.DRAWER_ROW_HEIGHT.value
 
-    private fun isSamsung(): Boolean =
-        Build.MANUFACTURER.orEmpty().equals(SAMSUNG, ignoreCase = true) ||
-            Build.BRAND.orEmpty().equals(SAMSUNG, ignoreCase = true)
+    fun profileName(): String = foldableBrand.title
+
+    private fun isSamsung(): Boolean = Build.MANUFACTURER.orEmpty().equals("samsung", true) ||
+        Build.BRAND.orEmpty().equals("samsung", true)
+
+    private fun deviceSignature(): String = listOf(
+        Build.MANUFACTURER, Build.BRAND, Build.MODEL, Build.DEVICE, Build.PRODUCT,
+        Build.HARDWARE, Build.FINGERPRINT
+    ).joinToString(" ") { it.orEmpty().lowercase() }
 
     private fun emulatorAvdName(): String = try {
-        Class.forName("android.os.SystemProperties")
-            .getMethod("get", String::class.java, String::class.java)
+        Class.forName("android.os.SystemProperties").getMethod("get", String::class.java, String::class.java)
             .invoke(null, "ro.boot.qemu.avd_name", "") as? String ?: ""
-    } catch (_: Throwable) {
-        ""
-    }
+    } catch (_: Throwable) { "" }
 }

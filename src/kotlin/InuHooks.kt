@@ -39,7 +39,7 @@ object InuHooks {
     fun init(context: Context) {
         CrashReporter.install()
         InuConfig.load(context)
-        desu.mintgram.helpers.FlipDeviceHelper.applyProfileForCurrentDevice()
+        desu.mintgram.helpers.FlipDeviceHelper.applyProfileForCurrentDevice(context)
         FontHelper.init(context)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             FontHelper.installGlobal()
