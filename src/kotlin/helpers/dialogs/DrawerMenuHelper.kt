@@ -5,6 +5,8 @@ import desu.mintgram.InuConfig
 import desu.mintgram.PluginsBridge
 import desu.mintgram.helpers.feed.FeedChatHelper
 import desu.mintgram.helpers.menu.DrawerMenuConfig
+import desu.mintgram.helpers.security.GhostModeHelper
+import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.LocaleController
 import org.telegram.messenger.MediaDataController
 import org.telegram.messenger.MessagesController
@@ -134,7 +136,21 @@ object DrawerMenuHelper {
                 }
 
                 DrawerMenuConfig.Item.QR -> {
-                    nav.lastFragment?.let { QrActivity.openCameraScanActivity(it) }
+                    close()
+                    val fragment = nav.lastFragment
+                    AndroidUtilities.runOnUIThread({
+                        if (fragment != null && !fragment.isFinished) {
+                            try {
+                                QrActivity.openCameraScanActivity(fragment)
+                            } catch (_: Throwable) {
+                                // Camera/permission races on the cover screen must not close Mintgram.
+                            }
+                        }
+                    }, 180)
+                }
+
+                DrawerMenuConfig.Item.GHOST_MODE -> {
+                    GhostModeHelper.setEnabled(!GhostModeHelper.isEnabled())
                     close()
                 }
 

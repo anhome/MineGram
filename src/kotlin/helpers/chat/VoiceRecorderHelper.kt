@@ -17,6 +17,7 @@ import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.isVisible
 import desu.mintgram.InuConfig
+import desu.mintgram.helpers.FlipDeviceHelper
 import org.telegram.messenger.AndroidUtilities
 import org.telegram.messenger.LocaleController
 import org.telegram.messenger.R
@@ -45,7 +46,7 @@ object VoiceRecorderHelper {
 
     /** On narrow cover screens the attach and voice controls stay in a left-side cluster. */
     @JvmStatic
-    fun isFlipLeftLayout(): Boolean = InuConfig.FLIP_DEVICE_MODE.value
+    fun isFlipLeftLayout(): Boolean = InuConfig.FLIP_DEVICE_MODE.value || FlipDeviceHelper.isSupportedFoldable
 
     // when enabled, attachButton/attachLayout are shifted right into the sendButton slot
     // since the frame margin stays at DEFAULT_HEIGHT but the audio/video button is gone

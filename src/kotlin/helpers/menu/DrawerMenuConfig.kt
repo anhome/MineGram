@@ -17,6 +17,7 @@ class DrawerMenuConfig(key: String) : MenuOrderConfig<DrawerMenuConfig.Item>(key
         SAVED_MESSAGES("saved_messages", R.string.SavedMessages, R.drawable.msg_saved),
         FEED("feed", R.string.InuFeed, R.drawable.ic_feed),
         QR("qr", R.string.ScanQrCode, R.drawable.msg_qrcode),
+        GHOST_MODE("ghost_mode", R.string.InuGhostMode, R.drawable.ghost),
         PROXY("proxy", R.string.ProxySettings, R.drawable.outline_shield_check),
         SETTINGS("settings", R.string.Settings, R.drawable.msg_settings),
         PLUGINS("plugins", R.string.InuPlugins, R.drawable.msg_plugins);

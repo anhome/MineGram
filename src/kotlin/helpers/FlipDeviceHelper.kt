@@ -79,13 +79,13 @@ object FlipDeviceHelper {
         val compact = isCompactWindow(context)
         val maxWidthDp = when {
             !InuConfig.FLIP_DEVICE_MODE.value -> 320f
-            compact -> 260f
-            else -> 288f
+            compact -> 220f
+            else -> 252f
         }
         val edgeGapDp = when {
             !InuConfig.FLIP_DEVICE_MODE.value -> 56f
-            compact -> 40f
-            else -> 48f
+            compact -> 32f
+            else -> 40f
         }
         return minOf(AndroidUtilities.dp(maxWidthDp), shortSide - AndroidUtilities.dp(edgeGapDp))
             .coerceAtLeast(AndroidUtilities.dp(200f))
