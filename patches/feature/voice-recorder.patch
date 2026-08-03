@@ -142,8 +142,8 @@ index 0000000..0000000 100644
              attachButton.setImageResource(R.drawable.msg_input_attach2);
              attachButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_listSelector)));
 -            messageEditTextContainer.addView(attachButton, LayoutHelper.createFrame(DEFAULT_HEIGHT, DEFAULT_HEIGHT, Gravity.BOTTOM | Gravity.RIGHT));
-+            if (!VoiceRecorderHelper.isMovedToAttach()) {
-+                messageEditTextContainer.addView(attachButton, LayoutHelper.createFrame(DEFAULT_HEIGHT, DEFAULT_HEIGHT, Gravity.BOTTOM | Gravity.RIGHT));
++            if (!VoiceRecorderHelper.isMovedToAttach() || VoiceRecorderHelper.isFlipLeftLayout()) {
++                messageEditTextContainer.addView(attachButton, LayoutHelper.createFrame(DEFAULT_HEIGHT, DEFAULT_HEIGHT, Gravity.BOTTOM | (VoiceRecorderHelper.isFlipLeftLayout() ? Gravity.LEFT : Gravity.RIGHT)));
 +            }
              attachButton.setOnClickListener(v -> {
                  if (adjustPanLayoutHelper != null && adjustPanLayoutHelper.animationInProgress() || attachLayoutPaddingAlpha == 0f) {
@@ -154,7 +154,7 @@ index 0000000..0000000 100644
          sendButtonContainer.setClipToPadding(false);
 -        textFieldContainer.addView(sendButtonContainer, LayoutHelper.createFrame(100, DEFAULT_HEIGHT, Gravity.BOTTOM | Gravity.RIGHT));
 +        textFieldContainer.addView(sendButtonContainer, LayoutHelper.createFrame(VoiceRecorderHelper.isMovedToAttach() ? DEFAULT_HEIGHT : 100, DEFAULT_HEIGHT, Gravity.BOTTOM | Gravity.RIGHT));
-+        if (VoiceRecorderHelper.isMovedToAttach() && attachButton != null) {
++        if (VoiceRecorderHelper.isMovedToAttach() && !VoiceRecorderHelper.isFlipLeftLayout() && attachButton != null) {
 +            sendButtonContainer.addView(attachButton, LayoutHelper.createFrame(DEFAULT_HEIGHT, DEFAULT_HEIGHT, Gravity.RIGHT | Gravity.BOTTOM));
 +        }
  
@@ -187,7 +187,11 @@ index 0000000..0000000 100644
          };
          audioVideoButtonContainer.setSoundEffectsEnabled(false);
 +        audioVideoButtonContainer.setVisibility(VISIBLE); // trigger inu override for initial state
-         sendButtonContainer.addView(audioVideoButtonContainer, LayoutHelper.createFrame(DEFAULT_HEIGHT, DEFAULT_HEIGHT, Gravity.RIGHT | Gravity.BOTTOM));
+        if (VoiceRecorderHelper.isFlipLeftLayout()) {
+            textFieldContainer.addView(audioVideoButtonContainer, LayoutHelper.createFrame(DEFAULT_HEIGHT, DEFAULT_HEIGHT, Gravity.LEFT | Gravity.BOTTOM, DEFAULT_HEIGHT, 0, 0, 0));
+        } else {
+            sendButtonContainer.addView(audioVideoButtonContainer, LayoutHelper.createFrame(DEFAULT_HEIGHT, DEFAULT_HEIGHT, Gravity.RIGHT | Gravity.BOTTOM));
+        }
          audioVideoButtonContainer.setFocusable(true);
          audioVideoButtonContainer.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
 @@ -3651,7 +3677,7 @@ public class ChatActivityEnterView extends FrameLayout implements
@@ -220,7 +224,7 @@ index 0000000..0000000 100644
              updateMessageTextParams();
          }
 -        attachButton.setTranslationX(attachLayoutPaddingTranslationX + attachLayoutTranslationX + offset);
-+        if (!VoiceRecorderHelper.isMovedToAttach()) {
++        if (!VoiceRecorderHelper.isMovedToAttach() && !VoiceRecorderHelper.isFlipLeftLayout()) {
 +            attachButton.setTranslationX(attachLayoutPaddingTranslationX + attachLayoutTranslationX + offset);
 +        }
          audioVideoSendButton.setTranslationX(offset);
