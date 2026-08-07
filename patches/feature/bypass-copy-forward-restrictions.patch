@@ -1,0 +1,48 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: anhome <anhome@users.noreply.github.com>
+Date: Thu, 7 Aug 2026 20:15:00 +0800
+Subject: [PATCH] bypass copy/forward/download restrictions for all groups
+
+Bypass group-level permission restrictions:
+- Allow COPY and FORWARD in all groups regardless of noforwards/nocopy flags
+- Allow SAVE_TO_GALLERY and SAVE_TO_DOWNLOADS for all media
+- Remove "forwarding is not allowed" warning overlay
+
+--- .../java/org/telegram/ui/ChatActivity.java
++++ .../java/org/telegram/ui/ChatActivity.java
+@@ -32020,8 +32020,10 @@ public class ChatActivity extends BaseFragment implements
+ }
+ 
+ boolean showNoForwards = (isPeerNoForwards() || message.messageOwner.noforwards && currentUser != null && currentUser.bot)
+     && message.messageOwner.action == null && message.isSent() && !message.isEditing()
+     && chatMode != MODE_SCHEDULED && chatMode != MODE_SAVED && getDialogId() != UserObject.VERIFY;
++
++// Bypass: always allow copy, forward, and download in all groups
++showNoForwards = false;
+ 
+ scrimPopupContainerLayout.addView(popupLayout, LayoutHelper.createLinearRelatively(
+     LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT,
+@@ -32150,6 +32152,11 @@ public class ChatActivity extends BaseFragment implements
+     scrimPopupContainerLayout.applyViewBottom(fl);
+ }
+ 
++// Bypass: force enable save-to-gallery and save-to-downloads menu items
++// even when showNoForwards would normally suppress them
++boolean inu_bypassRestrictions = true; // always true: ignore nocopy/noforwards
++
+ if (showNoForwards) {
+     popupLayout.measure(
+         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+@@ -32170,7 +32177,7 @@ public class ChatActivity extends BaseFragment implements
+     fl.setBackground(shadowDrawable2);
+     fl.addView(tv, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT,
+         LayoutHelper.WRAP_CONTENT, 0, 11, 11, 11, 11));
+-    scrimPopupContainerLayout.addView(fl, LayoutHelper.createLinear(
++    // Bypass: skip adding "forwarding not allowed" warning
++    // scrimPopupContainerLayout.addView(fl, LayoutHelper.createLinear(
+         LayoutHelper.MATCH_PARENT, LayoutHelper.WRAP_CONTENT,
+         Gravity.LEFT, isReactionsAvailable ? 16 : 0, -8,
+         isReactionsAvailable ? 36 : 0, 0));
++    // end bypass
+     scrimPopupContainerLayout.applyViewBottom(fl);
+ }
