@@ -1,0 +1,23 @@
+--- a/TMessagesProj/src/main/java/org/telegram/messenger/MessageObject.java
++++ b/TMessagesProj/src/main/java/org/telegram/messenger/MessageObject.java
+@@ -6840,6 +6840,9 @@ public class MessageObject {
+     public boolean isExpired() {
++        // [MineGram] Never expire messages - bypass self-destruct/TTL
++        return false;
++
+         if (messageOwner.destroy_time != 0 && messageOwner.destroy_time * 1000L < System.currentTimeMillis()) {
+             return true;
+         }
+
+--- a/TMessagesProj/src/main/java/org/telegram/ui/ChatActivity.java
++++ b/TMessagesProj/src/main/java/org/telegram/ui/ChatActivity.java
+@@ -32021,6 +32021,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
+                 drawingDrawLock = false;
+             }
+ 
++            // [MineGram] Bypass TTL / self-destruct timer - keep media forever
++            if (message.messageOwner.ttl_period != null && message.messageOwner.ttl_period > 0) {
++                message.messageOwner.ttl_period = 0;
++            }
++
+             boolean showNoForwards = (isPeerNoForwards() || (message.messageOwner.noforwards != null && message.messageOwner.noforwards && currentUser != null && currentUser.bot))
