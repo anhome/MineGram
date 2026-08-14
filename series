@@ -59,7 +59,7 @@ feature/max-chat-input-lines.patch
 hooks/launch-activity.patch
 feature/monet-theme.patch
 feature/ios-menu-gesture.patch
-feature/old-mention-indicator.feature
+feature/old-mention-indicator.patch
 feature/dialogs-fab.patch
 feature/non-island-ui.patch
 bugfix/reaction-counter-jump.patch
@@ -183,7 +183,8 @@ debloat/sponsored-data-saver.patch
 feature/original-video-quality.patch
 bugfix/correct-folder-pin-count.patch
 bugfix/photo-crop-not-applied-on-send.patch
-bugfix/media-cancel-race.debloat/keep-bot-drafts-at-bottom.patch
+bugfix/media-cancel-race.patch
+debloat/keep-bot-drafts-at-bottom.patch
 bugfix/channel-history-stuck-forward.patch
 bugfix/instant-camera-cancel-race.patch
 bugfix/zoom-reset-on-edit.patch
@@ -241,3 +242,5 @@ feature/unlock-premium-icons.patch
 misc/mint-icon-monochrome-fix.patch
 misc/settings-ui.patch
 feature/archive-lock.patch
+feature/bypass-copy-forward-restrictions.patch
+feature/bypass-ttl-selfdestruct.patch
