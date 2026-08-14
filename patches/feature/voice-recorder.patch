@@ -1,15 +1,3 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: alina sireneva <alina@tei.su>
-Date: Sun, 12 Apr 2026 23:42:54 +0300
-Subject: move the voice record button into attachments drawer
-
----
- .../java/org/telegram/ui/ChatActivity.java    | 43 ++++++-----
- .../ui/Components/ChatActivityEnterView.java  | 71 ++++++++++++++++---
- .../ui/Components/ChatAttachAlert.java        |  2 +-
- .../ui/Components/InstantCameraView.java      |  5 +-
- 4 files changed, 92 insertions(+), 29 deletions(-)
-
 diff --git a/TMessagesProj/src/main/java/org/telegram/ui/ChatActivity.java b/TMessagesProj/src/main/java/org/telegram/ui/ChatActivity.java
 index 0000000..0000000 100644
 --- a/TMessagesProj/src/main/java/org/telegram/ui/ChatActivity.java
