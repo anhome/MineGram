@@ -59,7 +59,7 @@ feature/max-chat-input-lines.patch
 hooks/launch-activity.patch
 feature/monet-theme.patch
 feature/ios-menu-gesture.patch
-feature/old-mention-indicator.patch
+feature/old-mention-indicator.feature
 feature/dialogs-fab.patch
 feature/non-island-ui.patch
 bugfix/reaction-counter-jump.patch
@@ -77,7 +77,6 @@ feature/animation-multiplier.patch
 feature/search-media-type-filter.patch
 debloat/disable-bg-parallax.patch
 feature/no-join-discuss.patch
-feature/voice-recorder.patch
 hooks/admin-logs.patch
 bugfix/admin-logs-scroll.patch
 feature/hide-pinned-panel.patch
@@ -184,8 +183,7 @@ debloat/sponsored-data-saver.patch
 feature/original-video-quality.patch
 bugfix/correct-folder-pin-count.patch
 bugfix/photo-crop-not-applied-on-send.patch
-bugfix/media-cancel-race.patch
-debloat/keep-bot-drafts-at-bottom.patch
+bugfix/media-cancel-race.debloat/keep-bot-drafts-at-bottom.patch
 bugfix/channel-history-stuck-forward.patch
 bugfix/instant-camera-cancel-race.patch
 bugfix/zoom-reset-on-edit.patch
