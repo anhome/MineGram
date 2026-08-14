@@ -1,10 +1,17 @@
 bugfix/photo-viewer-crop.patch
+bugfix/photo-viewer-crop
 misc/build-support.patch
+misc/build
 misc/remove-play.patch
+misc/remove
 misc/defaults.patch
+misc/defaults
 debloat/hide-trending-stickers.patch
+debloat/hide-trending-st
 feature/predictive-back.patch
+feature/predictive-back
 debloat/disable-instant-camera.patch
+debloat/disable-instant-camera
 feature/show-seconds.patch
 debloat/disable-rounding.patch
 feature/all-recent-stickers.patch
