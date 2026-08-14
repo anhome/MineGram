@@ -143,7 +143,6 @@ bugfix/chat-preview-reactions-read.patch
 feature/better-spoilers.patch
 feature/old-layout-nav.patch
 bugfix/camera2-av-sync.patch
-feature/round-recorder.patch
 bugfix/cross-peer-reply-stale-quote.patch
 bugfix/phantom-photo-seekbar.patch
 bugfix/phantom-peek-dialogs.patch
@@ -183,8 +182,7 @@ debloat/sponsored-data-saver.patch
 feature/original-video-quality.patch
 bugfix/correct-folder-pin-count.patch
 bugfix/photo-crop-not-applied-on-send.patch
-bugfix/media-cancel-race.patch
-debloat/keep-bot-drafts-at-bottom.patch
+bugfix/media-cancel-race.debloat/keep-bot-drafts-at-bottom.patch
 bugfix/channel-history-stuck-forward.patch
 bugfix/instant-camera-cancel-race.patch
 bugfix/zoom-reset-on-edit.patch
